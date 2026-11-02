@@ -14,7 +14,7 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:900px;mar
 header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.brand h1{font-size:24px;margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:13px}
 .nav{display:flex;gap:6px;overflow:auto;margin-bottom:14px}.nav button{white-space:nowrap;background:#111720;border:1px solid var(--line);color:var(--muted);padding:9px 13px;border-radius:11px}.nav button.active{color:#07100b;background:var(--accent);border-color:var(--accent);font-weight:700}
 .card{background:rgba(17,23,32,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px rgba(0,0,0,.16)}
-.card h2{font-size:16px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:var(--card2);border:1px solid var(--line);padding:13px;border-radius:14px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:21px;font-weight:750;margin-top:5px}.good{color:var(--accent)}.bad{color:var(--danger)}.blue{color:var(--blue)}
+.card h2{font-size:16px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:var(--card2);border:1px solid var(--line);padding:13px;border-radius:14px}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:21px;font-weight:750;margin-top:5px}.good{color:var(--accent)}.bad{color:var(--danger)}.blue{color:var(--blue)}.over{color:var(--danger)!important}
 input,select{width:100%;background:#0b1016;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;outline:none}input:focus,select:focus{border-color:#647386}
 .row{display:flex;gap:9px;align-items:center}.row>*{flex:1}.btn{border:0;border-radius:11px;padding:11px 13px;background:#202a35;color:#fff}.btn.primary{background:var(--accent);color:#07100b;font-weight:750}.btn.danger{background:#351b20;color:#ff9a9a}.btn.small{padding:7px 9px;font-size:12px}
 .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.quick button{min-height:60px;background:#17202a;color:#fff;border:1px solid #2a3744;border-radius:13px}.quick button strong{display:block}.quick button span{font-size:11px;color:var(--muted)}
@@ -43,7 +43,7 @@ footer{color:#65717d;text-align:center;font-size:11px;margin-top:24px}
 <div class="stat"><div class="label">Still allowed today</div><div class="value good" id="todayAllowed">₹0</div></div>
 <div class="stat"><div class="label">Unused / saved today</div><div class="value blue" id="todaySaved">₹0</div></div>
 </div>
-<p class="muted" id="dailyNote" style="font-size:12px"></p>
+<p class="muted" id="dailyNote" style="font-size:12px"></p><p class="bad" id="overNote" style="font-size:12px;margin:6px 0 0;display:none">⚠ You have exceeded today’s personal target.</p>
 </section>
 
 <section class="card">
@@ -141,10 +141,10 @@ function render(){
  document.getElementById('monthPill').textContent=new Date().toLocaleString('en-IN',{month:'short',year:'numeric'});
  document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short'});
  document.getElementById('dailyTarget').textContent=money(dayTarget);
- document.getElementById('todaySpent').textContent=money(ts);
- document.getElementById('todayAllowed').textContent=money(allow);
- document.getElementById('todaySaved').textContent=money(Math.max(0,dayTarget-ts));
- document.getElementById('dailyNote').textContent=S.personalMode==='daily'?`Daily mode: ${money(S.personalTarget)} fixed each calendar day.`:`Monthly mode: ${money(S.personalTarget)} ÷ ${d} days = ${money(dayTarget)} per day.`;
+ document.getElementById('todaySpent').textContent=money(ts); document.getElementById('todaySpent').classList.toggle('over',ts>dayTarget);
+ document.getElementById('todayAllowed').textContent=money(allow); document.getElementById('todayAllowed').classList.toggle('over',ts>dayTarget);
+ document.getElementById('todaySaved').textContent=money(Math.max(0,dayTarget-ts)); document.getElementById('todaySaved').classList.toggle('over',ts>dayTarget);
+ document.getElementById('dailyNote').textContent=S.personalMode==='daily'?`Daily mode: ${money(S.personalTarget)} fixed each calendar day.`:`Monthly mode: ${money(S.personalTarget)} ÷ ${d} days = ${money(dayTarget)} per day.`; document.getElementById('overNote').style.display=ts>dayTarget?'block':'none';
  document.getElementById('incomeHome').textContent=money(S.income);
  document.getElementById('spentHome').textContent=money(totalSpent(k));
  document.getElementById('balanceHome').textContent=money(Number(S.income||0)-totalSpent(k));
@@ -155,7 +155,7 @@ function render(){
 }
 function renderQuick(){
  let g=document.getElementById('quickGrid');g.innerHTML='';
- S.shortcuts.forEach((x,i)=>{let b=document.createElement('button');b.innerHTML=`<strong>${esc(x)}</strong><span>tap to use</span>`;b.onclick=()=>{let a=document.getElementById('quickAmount').value;if(!a)return document.getElementById('quickAmount').focus();addTx(x,a)};g.appendChild(b)})
+ S.shortcuts.forEach((x,i)=>{let b=document.createElement('button');b.innerHTML=`<strong>${esc(x)}</strong><span>tap to use</span>`;b.onclick=()=>{let a=document.getElementById('quickAmount').value;if(!a)return document.getElementById('quickAmount').focus();addTx(x,a);document.getElementById('quickAmount').value=''};g.appendChild(b)})
 }
 function renderPersonalBox(){
  let k=monthKey(), spent=personalSpent(k), budget=personalMonthly(k), rem=Math.max(0,budget-spent), pct=budget?Math.min(100,spent/budget*100):0;
@@ -164,7 +164,7 @@ function renderPersonalBox(){
 function renderRecent(){
  let arr=S.tx.slice(0,6), el=document.getElementById('recentList');el.innerHTML='';
  if(!arr.length){el.innerHTML='<div class="muted">No expenses yet.</div>';return}
- arr.forEach((t,i)=>{let d=dateObj(t.ts);let x=document.createElement('div');x.className='item';x.innerHTML=`<div><b>${esc(t.cat)}</b><div class="meta">${d.toLocaleDateString('en-IN')} • ${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} • ${esc(t.budget)}</div></div><b>${money(t.amount)}</b>`;el.appendChild(x)})
+ arr.forEach((t,i)=>{let realIndex=S.tx.indexOf(t);let d=dateObj(t.ts);let x=document.createElement('div');x.className='item';x.innerHTML=`<div><b>${esc(t.cat)}</b><div class="meta">${d.toLocaleDateString('en-IN')} • ${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} • ${esc(t.budget)}</div></div><div class="row" style="justify-content:flex-end;flex:0 0 auto"><b>${money(t.amount)}</b><button class="btn danger small" data-del-recent="${realIndex}" title="Remove this entry">×</button></div>`;el.appendChild(x)});el.querySelectorAll('[data-del-recent]').forEach(b=>b.onclick=()=>{if(confirm('Remove this expense entry?')){S.tx.splice(Number(b.dataset.delRecent),1);save();render()}})
 }
 function renderBudget(){
  document.getElementById('budgetMonth').textContent=new Date().toLocaleString('en-IN',{month:'long',year:'numeric'});
@@ -184,7 +184,7 @@ function renderHistory(){
  let el=document.getElementById('historyList');el.innerHTML='';
  if(!arr.length){el.innerHTML='<p class="muted">No transactions for this month.</p>';return}
  let table=document.createElement('table');table.innerHTML='<thead><tr><th>Date</th><th>Category</th><th>Type</th><th>Amount</th><th></th></tr></thead><tbody></tbody>';
- arr.forEach(t=>{let idx=S.tx.indexOf(t),d=dateObj(t.ts),tr=document.createElement('tr');tr.innerHTML=`<td>${d.toLocaleDateString('en-IN')}<br><span class="muted">${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span></td><td>${esc(t.cat)}</td><td>${esc(t.budget)}</td><td>${money(t.amount)}</td><td><button class="btn danger small" data-del="${idx}">×</button></td>`;table.querySelector('tbody').appendChild(tr)});
+ arr.forEach(t=>{let idx=S.tx.indexOf(t),d=dateObj(t.ts),tr=document.createElement('tr');tr.innerHTML=`<td>${d.toLocaleDateString('en-IN')}<br><span class="muted">${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span></td><td>${esc(t.cat)}</td><td>${esc(t.budget)}</td><td>${money(t.amount)}</td><td><button class="btn danger small" data-del="${idx}" title="Remove this entry">Remove</button></td>`;table.querySelector('tbody').appendChild(tr)});
  el.appendChild(table);el.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Delete this transaction?')){S.tx.splice(Number(b.dataset.del),1);save();render()}})
 }
 function renderSettings(){
