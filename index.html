@@ -3,184 +3,216 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f6f3ee">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<title>My Money</title>
+<meta name="theme-color" content="#0b1020">
 <link rel="manifest" href="manifest.json">
+<title>My Money Tracker</title>
 <style>
-:root{
-  --bg:#f6f3ee;--card:#fffdf9;--ink:#20211f;--muted:#7c7b75;
-  --accent:#2f6f5e;--accent2:#dcebe3;--warm:#f1d7a8;--line:#e9e3da;
-  --danger:#b85c55;--shadow:0 14px 40px rgba(54,45,34,.08);
-}
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 90% 0%,#e6efe9 0 18%,transparent 38%),var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-.app{max-width:520px;margin:auto;padding:22px 16px 100px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.brand{font-size:25px;font-weight:800;letter-spacing:-.7px}.sub{color:var(--muted);font-size:12px;margin-top:3px}
-.iconbtn{border:1px solid var(--line);background:#ffffffaa;border-radius:16px;padding:11px 13px;font-size:18px}
-.hero{background:linear-gradient(145deg,#275d4f,#3f7d6b);color:white;border-radius:30px;padding:23px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.hero:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#ffffff12;right:-60px;top:-70px}
-.month{font-size:13px;opacity:.78}.balance{font-size:42px;font-weight:850;letter-spacing:-2px;margin:8px 0}.label{font-size:12px;opacity:.78}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.stat{background:#ffffff12;border:1px solid #ffffff1c;padding:12px;border-radius:17px}.stat b{display:block;font-size:17px;margin-top:3px}
-.today{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:25px;padding:19px;box-shadow:var(--shadow)}
-.row{display:flex;justify-content:space-between;align-items:center}.title{font-weight:800;font-size:16px}.muted{color:var(--muted);font-size:12px}.limit{font-size:27px;font-weight:850;color:var(--accent)}
-.track{height:9px;background:#ece8e1;border-radius:20px;overflow:hidden;margin:13px 0 8px}.fill{height:100%;background:var(--accent);border-radius:20px;transition:.25s}
-.quick{margin-top:16px}.amount{width:100%;font-size:32px;font-weight:800;border:0;outline:0;background:transparent;padding:8px 2px;color:var(--ink)}.amount::placeholder{color:#c4c0b8}
-.chips{display:flex;gap:8px;overflow:auto;padding:4px 0 8px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 13px;font-weight:700;color:#454640}.chip.active{background:var(--accent2);border-color:#b9d6ca;color:#245847}
-.add{width:100%;border:0;background:#20211f;color:#fff;border-radius:18px;padding:15px;font-size:16px;font-weight:800;margin-top:7px}
-.secondary{width:100%;border:1px solid var(--line);background:#fff;border-radius:18px;padding:13px;font-weight:750;margin-top:9px}
-.section{margin-top:25px}.sectionhead{display:flex;justify-content:space-between;align-items:end;margin-bottom:11px}
-.list,.history{background:var(--card);border:1px solid var(--line);border-radius:23px;overflow:hidden}.item{display:flex;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.cat{font-weight:750}.time{font-size:11px;color:var(--muted);margin-top:3px}.amt{font-weight:850}.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
-.monthrow{display:flex;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.monthrow:last-child{border:0}.bar{width:90px;height:6px;background:#eee9e0;border-radius:8px;margin-top:7px}.bar i{display:block;height:100%;background:var(--warm);border-radius:8px}
-.modal{position:fixed;inset:0;background:#1b211dcc;display:none;align-items:end;justify-content:center;padding:12px}.modal.open{display:flex}.sheet{background:var(--card);width:min(520px,100%);border-radius:28px;padding:20px}.sheet h2{margin:0 0 15px}.field{width:100%;padding:13px;border:1px solid var(--line);border-radius:14px;margin:6px 0 10px;font-size:15px;background:white}.close{float:right;border:0;background:#eee9e0;border-radius:12px;padding:8px}
-footer{text-align:center;color:#aaa79f;font-size:11px;margin-top:28px}
+:root{--bg:#080b14;--card:#111827;--card2:#151d30;--text:#f5f7ff;--muted:#9aa6bd;--accent:#7c5cff;--accent2:#27d3a2;--danger:#ff6678;--line:#263047;--shadow:0 18px 50px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% -10%,#202554 0,#080b14 38%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:900px;margin:auto;padding-bottom:90px}.top{padding:22px 18px 8px;display:flex;justify-content:space-between;align-items:center}.brand{font-size:23px;font-weight:800}.sub{font-size:12px;color:var(--muted);margin-top:3px}.iconbtn{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#12182a;color:white}
+.nav{position:sticky;top:0;z-index:10;padding:8px 14px;background:rgba(8,11,20,.82);backdrop-filter:blur(18px);display:flex;gap:7px;border-bottom:1px solid rgba(255,255,255,.04)}.nav button{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 6px;border-radius:12px;font-weight:700;font-size:13px}.nav button.active{background:#1b2340;color:white}
+.page{padding:16px 18px;display:none}.page.active{display:block}.hero{padding:22px;border:1px solid #252e48;border-radius:26px;background:linear-gradient(145deg,#171d34,#101625);box-shadow:var(--shadow);margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:27px}.hero p{margin:0;color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:20px}.stat{background:#0c1220;border:1px solid var(--line);padding:13px;border-radius:17px}.stat small{color:var(--muted);display:block;font-size:11px}.stat b{font-size:18px;display:block;margin-top:5px}
+.section{margin-top:16px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.sectionhead h2{font-size:17px;margin:0}.muted{color:var(--muted);font-size:12px}
+.card{background:linear-gradient(145deg,#111827,#0f1524);border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.entry{display:flex;gap:10px}.entry input{flex:1;min-width:0}.input,.select{width:100%;background:#0b1120;border:1px solid #2b3650;color:white;border-radius:14px;padding:13px;outline:none}.input:focus,.select:focus{border-color:var(--accent)}
+.primary{border:0;background:linear-gradient(135deg,#8b6cff,#6847e8);color:white;border-radius:14px;padding:13px 17px;font-weight:800}.secondary{border:1px solid var(--line);background:#151d30;color:white;border-radius:13px;padding:10px 13px;font-weight:700}.danger{color:#ff8996}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.chip{border:1px solid #29334d;background:#121a2b;color:#e8ecf7;border-radius:16px;padding:13px 8px;min-height:62px;font-weight:750;position:relative}.chip span{display:block;font-size:10px;color:var(--muted);font-weight:500;margin-top:4px}.chip.add{border-style:dashed;color:#9b89ff;background:#111529}.quick-edit{position:absolute;right:6px;top:5px;border:0;background:transparent;color:#8290ab;font-size:13px}
+.allow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.allowbox{padding:15px;border-radius:17px;background:#0c1220;border:1px solid var(--line)}.allowbox b{font-size:22px;display:block;margin-top:3px}.good{color:var(--accent2)}.warn{color:#ffd166}
+.list{display:flex;flex-direction:column;gap:8px}.row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #20283b}.row:last-child{border-bottom:0}.row .left{display:flex;gap:11px;align-items:center}.dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}.row small{color:var(--muted);display:block;margin-top:2px}.amount{font-weight:800}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.budgetrow{padding:13px 0;border-bottom:1px solid #20283b}.budgetrow:last-child{border-bottom:0}.budgetrow label{font-weight:700;font-size:14px;display:block;margin-bottom:7px}.budgetrow .calc{font-size:11px;color:var(--muted);margin-top:5px}
+.toggle{display:flex;background:#0a1020;border:1px solid var(--line);padding:4px;border-radius:14px;gap:4px}.toggle button{flex:1;border:0;background:transparent;color:var(--muted);padding:10px;border-radius:10px;font-weight:800}.toggle button.on{background:#292151;color:white}
+.notice{padding:12px 14px;border-radius:14px;background:#171d31;border:1px solid #2a3550;color:#bfc8db;font-size:12px;line-height:1.5}.monthbar{display:flex;gap:9px;align-items:center}.monthbar .select{flex:1}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.empty{text-align:center;color:var(--muted);padding:25px 10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(7px);display:none;align-items:flex-end;justify-content:center;z-index:30}.modal.show{display:flex}.sheet{width:min(560px,100%);background:#101726;border:1px solid var(--line);border-radius:26px 26px 0 0;padding:20px;box-shadow:0 -20px 70px rgba(0,0,0,.4)}.sheet h3{margin:0 0 14px}.sheet .actions{margin-top:14px}.small{font-size:11px;color:var(--muted)}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:25px}.page{padding:20px 0}.top{padding-left:0;padding-right:0}.nav{border-radius:18px;margin:0 0 4px}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top">
-    <div><div class="brand">my money<span style="color:var(--accent)">.</span></div><div class="sub" id="todayLabel"></div></div>
-    <button class="iconbtn" onclick="openPast()">＋</button>
-  </div>
+  <header class="top"><div><div class="brand">My Money Tracker</div><div class="sub" id="monthLabel"></div></div><button class="iconbtn" onclick="showPage('settings')">⚙</button></header>
+  <nav class="nav">
+    <button id="nav-home" onclick="showPage('home')">Home</button>
+    <button id="nav-budget" onclick="showPage('budget')">Budget</button>
+    <button id="nav-history" onclick="showPage('history')">History</button>
+    <button id="nav-settings" onclick="showPage('settings')">Settings</button>
+  </nav>
 
-  <section class="hero">
-    <div class="month" id="monthLabel"></div>
-    <div class="label">Personal budget remaining</div>
-    <div class="balance" id="balance">₹3,000</div>
-    <div class="stats">
-      <div class="stat"><span class="label">Monthly budget</span><b id="budgetText">₹3,000</b></div>
-      <div class="stat"><span class="label">Spent this month</span><b id="spentText">₹0</b></div>
+  <main id="home" class="page">
+    <section class="hero">
+      <h1>Spend with intention.</h1><p>Quick entry first. Your money picture stays visible.</p>
+      <div class="stats">
+        <div class="stat"><small>Monthly income</small><b id="hIncome">₹0</b></div>
+        <div class="stat"><small>Spent this month</small><b id="hSpent">₹0</b></div>
+        <div class="stat"><small>Balance</small><b id="hBalance">₹0</b></div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <div class="sectionhead"><h2>Quick expense</h2><span class="muted">Personal</span></div>
+      <div class="entry"><input id="amount" class="input" inputmode="decimal" placeholder="₹ Amount"><button class="primary" onclick="addNow()">Add</button></div>
+      <div class="chips" id="chips"></div>
+      <div class="actions" style="margin-top:12px"><button class="secondary" onclick="openPast()">＋ Add past expense</button><button class="secondary" onclick="showPage('settings')">✎ Edit cards</button></div>
+    </section>
+
+    <section class="section">
+      <div class="sectionhead"><h2>Today</h2><span class="muted" id="todayDate"></span></div>
+      <div class="card allow">
+        <div class="allowbox"><small class="muted">Today's personal target</small><b id="dailyTarget">₹0</b></div>
+        <div class="allowbox"><small class="muted">Still allowed</small><b id="stillAllowed" class="good">₹0</b></div>
+      </div>
+    </section>
+
+    <section class="section card">
+      <div class="sectionhead"><h2>Personal budget</h2><button class="secondary" onclick="showPage('budget')">Edit</button></div>
+      <div class="allow">
+        <div><small class="muted">This month</small><b id="personalMonthly">₹0</b></div>
+        <div><small class="muted">Spent</small><b id="personalSpent">₹0</b></div>
+      </div>
+    </section>
+
+    <section class="section card"><div class="sectionhead"><h2>Recent expenses</h2><button class="secondary" onclick="showPage('history')">All</button></div><div id="recent" class="list"></div></section>
+  </main>
+
+  <main id="budget" class="page">
+    <div class="sectionhead"><div><h2>Budget & targets</h2><div class="muted">Everything here is editable.</div></div></div>
+    <div class="card">
+      <div class="monthbar"><span class="muted">Calculation month</span><input id="budgetMonth" type="month" class="input" onchange="renderBudget()"></div>
+      <div class="notice" style="margin-top:12px">Personal is special: choose a daily target or a monthly limit. The app automatically converts it using the exact number of days in the selected month.</div>
+
+      <div class="budgetrow">
+        <label>Monthly income / salary</label><input id="incomeEdit" class="input" type="number" min="0" step="1" oninput="saveBudgetInputs()">
+      </div>
+
+      <div class="budgetrow">
+        <label>Personal spending</label>
+        <div class="toggle"><button id="dailyMode" onclick="setPersonalMode('daily')">Daily</button><button id="monthlyMode" onclick="setPersonalMode('monthly')">Monthly</button></div>
+        <input id="personalEdit" class="input" style="margin-top:9px" type="number" min="0" step="0.01" oninput="savePersonalValue()">
+        <div id="personalInputLabel" class="small" style="margin-top:5px"></div>
+        <div class="calc" id="personalCalc"></div>
+      </div>
+
+      <div id="fixedBudgets"></div>
+      <button class="primary" style="width:100%;margin-top:15px" onclick="saveAllBudget()">Save targets</button>
     </div>
-  </section>
+  </main>
 
-  <section class="today">
-    <div class="row"><div><div class="title">Today's allowance</div><div class="muted">A daily ceiling — unused money stays saved</div></div><div class="limit" id="dailyLimit">₹100</div></div>
-    <div class="track"><div class="fill" id="dailyFill"></div></div>
-    <div class="row"><span class="muted" id="todaySpent">Spent ₹0</span><b id="stillAllowed">₹100 left today</b></div>
-  </section>
+  <main id="history" class="page">
+    <div class="sectionhead"><div><h2>History</h2><div class="muted">Month-by-month view</div></div></div>
+    <div class="card"><div class="monthbar"><span class="muted">Month</span><input id="historyMonth" type="month" class="input" onchange="renderHistory()"></div></div>
+    <div class="section card"><div class="stats" style="margin-top:0"><div class="stat"><small>Total spent</small><b id="histTotal">₹0</b></div><div class="stat"><small>Transactions</small><b id="histCount">0</b></div><div class="stat"><small>Personal</small><b id="histPersonal">₹0</b></div></div></div>
+    <div class="section card"><div class="sectionhead"><h2>By category</h2></div><div id="byCat" class="list"></div></div>
+    <div class="section card"><div class="sectionhead"><h2>Transactions</h2></div><div id="histTx" class="list"></div></div>
+  </main>
 
-  <section class="today quick">
-    <div class="title">Quick expense</div>
-    <input id="amount" class="amount" type="number" inputmode="decimal" placeholder="₹ 0" min="0">
-    <div class="chips" id="chips"></div>
-    <button class="add" onclick="addNow()">Add expense</button>
-    <button class="secondary" onclick="openPast()">Add past expense</button>
-  </section>
-
-  <section class="section">
-    <div class="sectionhead"><div><div class="title">This month</div><div class="muted">Where your personal money went</div></div></div>
-    <div class="list" id="summary"></div>
-  </section>
-
-  <section class="section">
-    <div class="sectionhead"><div><div class="title">Recent expenses</div><div class="muted">Latest entries, with exact time</div></div></div>
-    <div class="list" id="log"></div>
-  </section>
-
-  <section class="section">
-    <div class="sectionhead"><div><div class="title">Monthly history</div><div class="muted">Your spending rhythm over time</div></div></div>
-    <div class="history" id="history"></div>
-  </section>
-  <footer>Private by default • stored on this device</footer>
+  <main id="settings" class="page">
+    <div class="sectionhead"><div><h2>Customize</h2><div class="muted">Make the app yours.</div></div></div>
+    <div class="section card">
+      <div class="sectionhead"><h2>Personal expense cards</h2><span class="muted">Tap ✎ to rename</span></div>
+      <div id="shortcutEditor" class="list"></div>
+      <button class="secondary" style="width:100%;margin-top:12px" onclick="openAddShortcut()">＋ Add expense card</button>
+      <div class="notice" style="margin-top:12px">Example: rename “Tea” to “Coffee”, “Snacks” to “Breakfast”, or add any card you use often. Cards are personal subcategories and all quick expenses are counted inside your Personal budget.</div>
+    </div>
+    <div class="section card">
+      <div class="sectionhead"><h2>Fixed expense categories</h2><span class="muted">Rename / add</span></div>
+      <div id="categoryEditor" class="list"></div>
+      <button class="secondary" style="width:100%;margin-top:12px" onclick="openAddCategory()">＋ Add budget category</button>
+    </div>
+    <div class="section card">
+      <div class="sectionhead"><h2>Data</h2></div>
+      <div class="actions"><button class="secondary" onclick="exportData()">Export backup</button><label class="secondary">Restore backup<input id="restoreFile" type="file" accept=".json" hidden onchange="restoreData(event)"></label><button class="secondary danger" onclick="resetData()">Reset all data</button></div>
+    </div>
+  </main>
 </div>
 
-<div class="modal" id="modal">
- <div class="sheet">
-   <button class="close" onclick="closePast()">✕</button>
-   <h2>Add past expense</h2>
-   <div class="muted">Use this only when the expense happened earlier.</div>
-   <input id="pastAmount" class="field" type="number" inputmode="decimal" placeholder="Amount ₹">
-   <div class="muted">Category</div>
-   <div class="chips" id="pastChips"></div>
-   <input id="pastDate" class="field" type="date">
-   <input id="pastTime" class="field" type="time">
-   <button class="add" onclick="addPast()">Save past expense</button>
- </div>
-</div>
+<div id="modal" class="modal" onclick="if(event.target.id==='modal')closeModal()"><div class="sheet"><h3 id="modalTitle"></h3><div id="modalBody"></div><div class="actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" id="modalSave">Save</button></div></div></div>
 
 <script>
-const KEY='my-money-v1';
-let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
- budget:3000,
+const KEY='moneyTrackerV4';
+const defaultState={
+ income:25000,
+ personalMode:'monthly',
+ personalTarget:3000,
+ categories:[
+  {name:'Lunch / Dining',budget:3000},
+  {name:'Room Rent',budget:6000},
+  {name:'Light Bill',budget:1000},
+  {name:'Petrol',budget:2000},
+  {name:'Travel',budget:1500}
+ ],
  shortcuts:['Tea','Coffee','Lunch','Snacks','Shopping','Other'],
- tx:[
-  {cat:'Tea',amount:20,ts:new Date(Date.now()-86400000).toISOString()},
-  {cat:'Lunch',amount:70,ts:new Date(Date.now()-2*86400000).toISOString()}
- ]
+ tx:[]
 };
-let selected='Tea', pastSelected='Tea';
+let S=load(), selectedShortcut=S.shortcuts[0]||'Other';
 
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
-function money(n){return '₹'+Math.round(n).toLocaleString('en-IN')}
-function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function monthKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-function fmtDate(ts){return new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}
-function today(){return new Date()}
-function txForMonth(d){let k=monthKey(d);return state.tx.filter(t=>monthKey(new Date(t.ts))===k)}
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return x?{...defaultState,...x}:structuredClone(defaultState)}catch(e){return structuredClone(defaultState)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:0,maximumFractionDigits:2})}
+function ym(d=new Date()){return d.toISOString().slice(0,7)}
+function daysInMonth(key){let [y,m]=key.split('-').map(Number);return new Date(y,m,0).getDate()}
+function monthName(key){let [y,m]=key.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en-IN',{month:'long',year:'numeric'})}
+function txMonth(t){return t.ts.slice(0,7)}
+function txSpent(key,budget=null){return S.tx.filter(t=>txMonth(t)===key && (!budget||t.budget===budget)).reduce((a,t)=>a+Number(t.amount),0)}
+function totalCategories(){return S.categories.map(x=>x.name)}
+function personalMonthly(key){let d=daysInMonth(key);return S.personalMode==='daily'?Number(S.personalTarget||0)*d:Number(S.personalTarget||0)}
+function personalDaily(key){let d=daysInMonth(key);return S.personalMode==='daily'?Number(S.personalTarget||0):Number(S.personalTarget||0)/d}
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.getElementById('nav-'+p).classList.add('active');if(p==='home')renderHome();if(p==='budget')renderBudget();if(p==='history')renderHistory();if(p==='settings')renderSettings();scrollTo({top:0,behavior:'smooth'})}
+function renderHome(){
+ let key=ym(), today=new Date().toISOString().slice(0,10), spent=txSpent(key), personal=txSpent(key,'Personal'), todayPersonal=S.tx.filter(t=>t.ts.slice(0,10)===today&&t.budget==='Personal').reduce((a,t)=>a+Number(t.amount),0);
+ document.getElementById('monthLabel').textContent=monthName(key);
+ document.getElementById('todayDate').textContent=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+ document.getElementById('hIncome').textContent=money(S.income);document.getElementById('hSpent').textContent=money(spent);document.getElementById('hBalance').textContent=money(Number(S.income)-spent);
+ document.getElementById('dailyTarget').textContent=money(personalDaily(key));document.getElementById('stillAllowed').textContent=money(Math.max(0,personalDaily(key)-todayPersonal));
+ document.getElementById('personalMonthly').textContent=money(personalMonthly(key));document.getElementById('personalSpent').textContent=money(personal);
+ renderChips();renderRecent();
+}
 function renderChips(){
- const make=(id,selectedVal,click)=>{document.getElementById(id).innerHTML=state.shortcuts.map(x=>`<button class="chip ${x===selectedVal?'active':''}" onclick="${click}('${x.replace(/'/g,"\\'")}')">${x}</button>`).join('')}
- make('chips',selected,'pick'); make('pastChips',pastSelected,'pickPast')
+ const el=document.getElementById('chips');el.innerHTML='';
+ S.shortcuts.forEach((x,i)=>{let b=document.createElement('button');b.className='chip';b.innerHTML=esc(x)+'<span>Personal</span><button class="quick-edit" title="Rename" onclick="event.stopPropagation();openRenameShortcut('+i+')">✎</button>';b.onclick=()=>{selectedShortcut=x;document.querySelectorAll('.chip').forEach(c=>c.style.outline='none');b.style.outline='2px solid #7c5cff'};el.appendChild(b)});
+ let add=document.createElement('button');add.className='chip add';add.innerHTML='＋<span>Add card</span>';add.onclick=openAddShortcut;el.appendChild(add);
 }
-function pick(x){selected=x;renderChips()}
-function pickPast(x){pastSelected=x;renderChips()}
-function render(){
- const now=today(), month=txForMonth(now), spent=month.reduce((s,t)=>s+Number(t.amount),0);
- const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
- const daily=state.budget/days;
- const todaySpent=state.tx.filter(t=>dateKey(new Date(t.ts))===dateKey(now)).reduce((s,t)=>s+Number(t.amount),0);
- document.getElementById('todayLabel').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
- document.getElementById('monthLabel').textContent=now.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
- document.getElementById('balance').textContent=money(Math.max(0,state.budget-spent));
- document.getElementById('budgetText').textContent=money(state.budget);
- document.getElementById('spentText').textContent=money(spent);
- document.getElementById('dailyLimit').textContent=money(daily);
- document.getElementById('todaySpent').textContent='Spent '+money(todaySpent);
- document.getElementById('stillAllowed').textContent=money(Math.max(0,daily-todaySpent))+' left today';
- document.getElementById('dailyFill').style.width=Math.min(100,todaySpent/daily*100)+'%';
- renderChips();
-
- const sums={}; month.forEach(t=>sums[t.cat]=(sums[t.cat]||0)+Number(t.amount));
- const cats=Object.entries(sums).sort((a,b)=>b[1]-a[1]);
- document.getElementById('summary').innerHTML=cats.length?cats.map(([c,v])=>{
-   const count=month.filter(t=>t.cat===c).length;
-   return `<div class="item"><div><div class="cat">${c}</div><div class="time">${count} transaction${count>1?'s':''}</div></div><div class="amt">${money(v)}</div></div>`
- }).join(''):`<div class="empty">Your first expense will appear here.</div>`;
-
- const recent=[...state.tx].sort((a,b)=>new Date(b.ts)-new Date(a.ts)).slice(0,12);
- document.getElementById('log').innerHTML=recent.length?recent.map(t=>`<div class="item"><div><div class="cat">${t.cat}</div><div class="time">${fmtDate(t.ts)}</div></div><div class="amt">−${money(t.amount)}</div></div>`).join(''):`<div class="empty">Nothing spent yet.</div>`;
-
- const monthMap={}; state.tx.forEach(t=>{let d=new Date(t.ts),k=monthKey(d);monthMap[k]=(monthMap[k]||0)+Number(t.amount)});
- const hist=Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,6);
- const max=Math.max(...hist.map(x=>x[1]),1);
- document.getElementById('history').innerHTML=hist.length?hist.map(([k,v])=>{
-   let [y,m]=k.split('-'); let label=new Date(y,m-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
-   return `<div class="monthrow"><div><b>${label}</b><div class="bar"><i style="width:${v/max*100}%"></i></div></div><b>${money(v)}</b></div>`
- }).join(''):`<div class="empty">Your monthly history will build automatically.</div>`;
+function renderRecent(){let el=document.getElementById('recent'), arr=[...S.tx].sort((a,b)=>b.ts.localeCompare(a.ts)).slice(0,6);el.innerHTML=arr.length?arr.map(rowHTML).join(''):'<div class="empty">No expenses yet.</div>'}
+function rowHTML(t){let d=new Date(t.ts);return `<div class="row"><div class="left"><span class="dot"></span><div><b>${esc(t.cat)}</b><small>${d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})} · ${d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</small></div></div><span class="amount">${money(t.amount)}</span></div>`}
+function addNow(){let a=parseFloat(document.getElementById('amount').value);if(!a||a<=0)return alert('Enter a valid amount.');S.tx.push({cat:selectedShortcut||'Other',amount:a,ts:new Date().toISOString(),budget:'Personal'});save();document.getElementById('amount').value='';renderHome()}
+function openPast(){openModal('Add past expense',`<label class="small">Expense card</label><select id="mCat" class="select" style="margin-top:6px">${S.shortcuts.map(x=>`<option>${esc(x)}</option>`).join('')}</select><label class="small" style="display:block;margin-top:12px">Amount</label><input id="mAmt" class="input" type="number" step="0.01" style="margin-top:6px"><label class="small" style="display:block;margin-top:12px">Date & time</label><input id="mDate" class="input" type="datetime-local" style="margin-top:6px">`,()=>{let a=parseFloat(mAmt.value);if(!a)return alert('Enter amount');let dt=mDate.value?new Date(mDate.value):new Date();S.tx.push({cat:mCat.value,amount:a,ts:dt.toISOString(),budget:'Personal'});save();closeModal();renderHome()});setTimeout(()=>mDate.value=new Date().toISOString().slice(0,16),0)}
+function renderBudget(){
+ let key=document.getElementById('budgetMonth').value||ym();document.getElementById('budgetMonth').value=key;
+ document.getElementById('incomeEdit').value=S.income;
+ document.getElementById('dailyMode').classList.toggle('on',S.personalMode==='daily');document.getElementById('monthlyMode').classList.toggle('on',S.personalMode==='monthly');
+ document.getElementById('personalEdit').value=S.personalTarget;
+ document.getElementById('personalInputLabel').textContent=S.personalMode==='daily'?'Daily target':'Monthly limit';
+ document.getElementById('personalCalc').textContent=S.personalMode==='daily'?`For ${monthName(key)} (${daysInMonth(key)} days): monthly target = ${money(personalMonthly(key))}`:`For ${monthName(key)} (${daysInMonth(key)} days): daily target = ${money(personalDaily(key))}`;
+ document.getElementById('fixedBudgets').innerHTML=S.categories.map((c,i)=>`<div class="budgetrow"><label>${esc(c.name)}</label><input class="input catBudget" data-i="${i}" type="number" min="0" step="1" value="${c.budget}"></div>`).join('');
 }
-function addNow(){
- const amount=Number(document.getElementById('amount').value);
- if(!amount||amount<=0){alert('Enter an amount first.');return}
- // Timestamp is captured exactly when this button is pressed.
- state.tx.push({cat:selected,amount,ts:new Date().toISOString()});
- document.getElementById('amount').value='';
- save();
+function setPersonalMode(mode){S.personalMode=mode;save();renderBudget()}
+function savePersonalValue(){let v=parseFloat(document.getElementById('personalEdit').value);if(!isNaN(v)){S.personalTarget=v;save();renderBudget()}}
+function saveBudgetInputs(){let v=parseFloat(document.getElementById('incomeEdit').value);if(!isNaN(v)){S.income=v;save()}}
+function saveAllBudget(){S.income=parseFloat(document.getElementById('incomeEdit').value)||0;document.querySelectorAll('.catBudget').forEach(i=>S.categories[Number(i.dataset.i)].budget=parseFloat(i.value)||0);let pv=parseFloat(document.getElementById('personalEdit').value);if(!isNaN(pv))S.personalTarget=pv;save();alert('Targets saved.');renderHome()}
+function renderHistory(){
+ let key=document.getElementById('historyMonth').value||ym();document.getElementById('historyMonth').value=key;
+ let arr=S.tx.filter(t=>txMonth(t)===key), total=arr.reduce((a,t)=>a+Number(t.amount),0), per=arr.filter(t=>t.budget==='Personal').reduce((a,t)=>a+Number(t.amount),0);
+ document.getElementById('histTotal').textContent=money(total);document.getElementById('histCount').textContent=arr.length;document.getElementById('histPersonal').textContent=money(per);
+ let cats={};arr.forEach(t=>cats[t.cat]=(cats[t.cat]||0)+Number(t.amount));document.getElementById('byCat').innerHTML=Object.keys(cats).length?Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="row"><div class="left"><span class="dot"></span><b>${esc(k)}</b></div><span class="amount">${money(v)}</span></div>`).join(''):'<div class="empty">No spending in this month.</div>';
+ document.getElementById('histTx').innerHTML=arr.length?[...arr].sort((a,b)=>b.ts.localeCompare(a.ts)).map(rowHTML).join(''):'<div class="empty">No transactions.</div>';
 }
-function openPast(){
- const n=new Date();
- document.getElementById('pastDate').value=dateKey(new Date(n.getTime()-86400000));
- document.getElementById('pastTime').value='12:00';
- document.getElementById('pastAmount').value='';
- document.getElementById('modal').classList.add('open');
- renderChips();
+function renderSettings(){
+ document.getElementById('shortcutEditor').innerHTML=S.shortcuts.map((x,i)=>`<div class="row"><div class="left"><span class="dot"></span><b>${esc(x)}</b></div><div class="actions"><button class="secondary" onclick="openRenameShortcut(${i})">✎</button><button class="secondary danger" onclick="deleteShortcut(${i})">×</button></div></div>`).join('');
+ document.getElementById('categoryEditor').innerHTML=S.categories.map((x,i)=>`<div class="row"><div><b>${esc(x.name)}</b><small>Target ${money(x.budget)}/month</small></div><div class="actions"><button class="secondary" onclick="openRenameCategory(${i})">✎</button><button class="secondary danger" onclick="deleteCategory(${i})">×</button></div></div>`).join('');
 }
-function closePast(){document.getElementById('modal').classList.remove('open')}
-function addPast(){
- const amount=Number(document.getElementById('pastAmount').value), d=document.getElementById('pastDate').value, t=document.getElementById('pastTime').value;
- if(!amount||!d||!t){alert('Enter amount, date and time.');return}
- const ts=new Date(d+'T'+t).toISOString();
- state.tx.push({cat:pastSelected,amount,ts});
- closePast();save();
-}
-render();
+function openRenameShortcut(i){openModal('Rename expense card',`<label class="small">Card name</label><input id="newName" class="input" value="${esc(S.shortcuts[i])}" style="margin-top:6px">`,()=>{let v=newName.value.trim();if(!v)return;S.shortcuts[i]=v;if(selectedShortcut===S.shortcuts[i])selectedShortcut=v;save();closeModal();renderSettings();renderHome()})}
+function openAddShortcut(){openModal('Add expense card',`<label class="small">Card name</label><input id="newName" class="input" placeholder="e.g. Gym, Coffee, Breakfast" style="margin-top:6px">`,()=>{let v=newName.value.trim();if(!v)return;if(S.shortcuts.includes(v))return alert('That card already exists.');S.shortcuts.push(v);selectedShortcut=v;save();closeModal();renderSettings();renderHome()})}
+function deleteShortcut(i){if(S.shortcuts.length<=1)return alert('Keep at least one expense card.');if(confirm(`Delete "${S.shortcuts[i]}" from quick cards? Existing transactions stay safe.`)){S.shortcuts.splice(i,1);if(selectedShortcut===undefined)selectedShortcut=S.shortcuts[0];save();renderSettings();renderHome()}}
+function openRenameCategory(i){openModal('Rename budget category',`<label class="small">Category name</label><input id="newName" class="input" value="${esc(S.categories[i].name)}" style="margin-top:6px">`,()=>{let v=newName.value.trim();if(!v)return;S.categories[i].name=v;save();closeModal();renderSettings();renderBudget()})}
+function openAddCategory(){openModal('Add budget category',`<label class="small">Category name</label><input id="newName" class="input" placeholder="e.g. Electricity, Medical" style="margin-top:6px"><label class="small" style="display:block;margin-top:12px">Monthly target</label><input id="newBudget" class="input" type="number" value="0" style="margin-top:6px">`,()=>{let v=newName.value.trim();if(!v)return;S.categories.push({name:v,budget:parseFloat(newBudget.value)||0});save();closeModal();renderSettings();renderBudget()})}
+function deleteCategory(i){if(confirm(`Delete budget category "${S.categories[i].name}"? Existing transactions are not deleted.`)){S.categories.splice(i,1);save();renderSettings();renderBudget()}}
+function openModal(title,body,fn){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalSave').onclick=fn;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function exportData(){let blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='money-tracker-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function restoreData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.tx||!x.shortcuts)throw 0;S={...defaultState,...x};save();renderSettings();renderHome();alert('Backup restored.')}catch(err){alert('Invalid backup file.')}};r.readAsText(f)}
+function resetData(){if(confirm('Delete all tracker data? This cannot be undone.')){S=structuredClone(defaultState);save();renderHome();renderSettings();renderBudget();renderHistory()}}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+document.getElementById('budgetMonth').value=ym();document.getElementById('historyMonth').value=ym();showPage('home');
 </script>
 </body>
 </html>
