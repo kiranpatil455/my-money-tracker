@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6f3ee">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>My Money</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#f6f3ee;--card:#fffdf9;--ink:#20211f;--muted:#7c7b75;
+  --accent:#2f6f5e;--accent2:#dcebe3;--warm:#f1d7a8;--line:#e9e3da;
+  --danger:#b85c55;--shadow:0 14px 40px rgba(54,45,34,.08);
+}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 90% 0%,#e6efe9 0 18%,transparent 38%),var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+.app{max-width:520px;margin:auto;padding:22px 16px 100px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.brand{font-size:25px;font-weight:800;letter-spacing:-.7px}.sub{color:var(--muted);font-size:12px;margin-top:3px}
+.iconbtn{border:1px solid var(--line);background:#ffffffaa;border-radius:16px;padding:11px 13px;font-size:18px}
+.hero{background:linear-gradient(145deg,#275d4f,#3f7d6b);color:white;border-radius:30px;padding:23px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#ffffff12;right:-60px;top:-70px}
+.month{font-size:13px;opacity:.78}.balance{font-size:42px;font-weight:850;letter-spacing:-2px;margin:8px 0}.label{font-size:12px;opacity:.78}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.stat{background:#ffffff12;border:1px solid #ffffff1c;padding:12px;border-radius:17px}.stat b{display:block;font-size:17px;margin-top:3px}
+.today{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:25px;padding:19px;box-shadow:var(--shadow)}
+.row{display:flex;justify-content:space-between;align-items:center}.title{font-weight:800;font-size:16px}.muted{color:var(--muted);font-size:12px}.limit{font-size:27px;font-weight:850;color:var(--accent)}
+.track{height:9px;background:#ece8e1;border-radius:20px;overflow:hidden;margin:13px 0 8px}.fill{height:100%;background:var(--accent);border-radius:20px;transition:.25s}
+.quick{margin-top:16px}.amount{width:100%;font-size:32px;font-weight:800;border:0;outline:0;background:transparent;padding:8px 2px;color:var(--ink)}.amount::placeholder{color:#c4c0b8}
+.chips{display:flex;gap:8px;overflow:auto;padding:4px 0 8px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 13px;font-weight:700;color:#454640}.chip.active{background:var(--accent2);border-color:#b9d6ca;color:#245847}
+.add{width:100%;border:0;background:#20211f;color:#fff;border-radius:18px;padding:15px;font-size:16px;font-weight:800;margin-top:7px}
+.secondary{width:100%;border:1px solid var(--line);background:#fff;border-radius:18px;padding:13px;font-weight:750;margin-top:9px}
+.section{margin-top:25px}.sectionhead{display:flex;justify-content:space-between;align-items:end;margin-bottom:11px}
+.list,.history{background:var(--card);border:1px solid var(--line);border-radius:23px;overflow:hidden}.item{display:flex;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.cat{font-weight:750}.time{font-size:11px;color:var(--muted);margin-top:3px}.amt{font-weight:850}.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
+.monthrow{display:flex;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.monthrow:last-child{border:0}.bar{width:90px;height:6px;background:#eee9e0;border-radius:8px;margin-top:7px}.bar i{display:block;height:100%;background:var(--warm);border-radius:8px}
+.modal{position:fixed;inset:0;background:#1b211dcc;display:none;align-items:end;justify-content:center;padding:12px}.modal.open{display:flex}.sheet{background:var(--card);width:min(520px,100%);border-radius:28px;padding:20px}.sheet h2{margin:0 0 15px}.field{width:100%;padding:13px;border:1px solid var(--line);border-radius:14px;margin:6px 0 10px;font-size:15px;background:white}.close{float:right;border:0;background:#eee9e0;border-radius:12px;padding:8px}
+footer{text-align:center;color:#aaa79f;font-size:11px;margin-top:28px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div><div class="brand">my money<span style="color:var(--accent)">.</span></div><div class="sub" id="todayLabel"></div></div>
+    <button class="iconbtn" onclick="openPast()">＋</button>
+  </div>
+
+  <section class="hero">
+    <div class="month" id="monthLabel"></div>
+    <div class="label">Personal budget remaining</div>
+    <div class="balance" id="balance">₹3,000</div>
+    <div class="stats">
+      <div class="stat"><span class="label">Monthly budget</span><b id="budgetText">₹3,000</b></div>
+      <div class="stat"><span class="label">Spent this month</span><b id="spentText">₹0</b></div>
+    </div>
+  </section>
+
+  <section class="today">
+    <div class="row"><div><div class="title">Today's allowance</div><div class="muted">A daily ceiling — unused money stays saved</div></div><div class="limit" id="dailyLimit">₹100</div></div>
+    <div class="track"><div class="fill" id="dailyFill"></div></div>
+    <div class="row"><span class="muted" id="todaySpent">Spent ₹0</span><b id="stillAllowed">₹100 left today</b></div>
+  </section>
+
+  <section class="today quick">
+    <div class="title">Quick expense</div>
+    <input id="amount" class="amount" type="number" inputmode="decimal" placeholder="₹ 0" min="0">
+    <div class="chips" id="chips"></div>
+    <button class="add" onclick="addNow()">Add expense</button>
+    <button class="secondary" onclick="openPast()">Add past expense</button>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead"><div><div class="title">This month</div><div class="muted">Where your personal money went</div></div></div>
+    <div class="list" id="summary"></div>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead"><div><div class="title">Recent expenses</div><div class="muted">Latest entries, with exact time</div></div></div>
+    <div class="list" id="log"></div>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead"><div><div class="title">Monthly history</div><div class="muted">Your spending rhythm over time</div></div></div>
+    <div class="history" id="history"></div>
+  </section>
+  <footer>Private by default • stored on this device</footer>
+</div>
+
+<div class="modal" id="modal">
+ <div class="sheet">
+   <button class="close" onclick="closePast()">✕</button>
+   <h2>Add past expense</h2>
+   <div class="muted">Use this only when the expense happened earlier.</div>
+   <input id="pastAmount" class="field" type="number" inputmode="decimal" placeholder="Amount ₹">
+   <div class="muted">Category</div>
+   <div class="chips" id="pastChips"></div>
+   <input id="pastDate" class="field" type="date">
+   <input id="pastTime" class="field" type="time">
+   <button class="add" onclick="addPast()">Save past expense</button>
+ </div>
+</div>
+
+<script>
+const KEY='my-money-v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+ budget:3000,
+ shortcuts:['Tea','Coffee','Lunch','Snacks','Shopping','Other'],
+ tx:[
+  {cat:'Tea',amount:20,ts:new Date(Date.now()-86400000).toISOString()},
+  {cat:'Lunch',amount:70,ts:new Date(Date.now()-2*86400000).toISOString()}
+ ]
+};
+let selected='Tea', pastSelected='Tea';
+
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function money(n){return '₹'+Math.round(n).toLocaleString('en-IN')}
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function monthKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+function fmtDate(ts){return new Date(ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}
+function today(){return new Date()}
+function txForMonth(d){let k=monthKey(d);return state.tx.filter(t=>monthKey(new Date(t.ts))===k)}
+function renderChips(){
+ const make=(id,selectedVal,click)=>{document.getElementById(id).innerHTML=state.shortcuts.map(x=>`<button class="chip ${x===selectedVal?'active':''}" onclick="${click}('${x.replace(/'/g,"\\'")}')">${x}</button>`).join('')}
+ make('chips',selected,'pick'); make('pastChips',pastSelected,'pickPast')
+}
+function pick(x){selected=x;renderChips()}
+function pickPast(x){pastSelected=x;renderChips()}
+function render(){
+ const now=today(), month=txForMonth(now), spent=month.reduce((s,t)=>s+Number(t.amount),0);
+ const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+ const daily=state.budget/days;
+ const todaySpent=state.tx.filter(t=>dateKey(new Date(t.ts))===dateKey(now)).reduce((s,t)=>s+Number(t.amount),0);
+ document.getElementById('todayLabel').textContent=now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+ document.getElementById('monthLabel').textContent=now.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+ document.getElementById('balance').textContent=money(Math.max(0,state.budget-spent));
+ document.getElementById('budgetText').textContent=money(state.budget);
+ document.getElementById('spentText').textContent=money(spent);
+ document.getElementById('dailyLimit').textContent=money(daily);
+ document.getElementById('todaySpent').textContent='Spent '+money(todaySpent);
+ document.getElementById('stillAllowed').textContent=money(Math.max(0,daily-todaySpent))+' left today';
+ document.getElementById('dailyFill').style.width=Math.min(100,todaySpent/daily*100)+'%';
+ renderChips();
+
+ const sums={}; month.forEach(t=>sums[t.cat]=(sums[t.cat]||0)+Number(t.amount));
+ const cats=Object.entries(sums).sort((a,b)=>b[1]-a[1]);
+ document.getElementById('summary').innerHTML=cats.length?cats.map(([c,v])=>{
+   const count=month.filter(t=>t.cat===c).length;
+   return `<div class="item"><div><div class="cat">${c}</div><div class="time">${count} transaction${count>1?'s':''}</div></div><div class="amt">${money(v)}</div></div>`
+ }).join(''):`<div class="empty">Your first expense will appear here.</div>`;
+
+ const recent=[...state.tx].sort((a,b)=>new Date(b.ts)-new Date(a.ts)).slice(0,12);
+ document.getElementById('log').innerHTML=recent.length?recent.map(t=>`<div class="item"><div><div class="cat">${t.cat}</div><div class="time">${fmtDate(t.ts)}</div></div><div class="amt">−${money(t.amount)}</div></div>`).join(''):`<div class="empty">Nothing spent yet.</div>`;
+
+ const monthMap={}; state.tx.forEach(t=>{let d=new Date(t.ts),k=monthKey(d);monthMap[k]=(monthMap[k]||0)+Number(t.amount)});
+ const hist=Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,6);
+ const max=Math.max(...hist.map(x=>x[1]),1);
+ document.getElementById('history').innerHTML=hist.length?hist.map(([k,v])=>{
+   let [y,m]=k.split('-'); let label=new Date(y,m-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+   return `<div class="monthrow"><div><b>${label}</b><div class="bar"><i style="width:${v/max*100}%"></i></div></div><b>${money(v)}</b></div>`
+ }).join(''):`<div class="empty">Your monthly history will build automatically.</div>`;
+}
+function addNow(){
+ const amount=Number(document.getElementById('amount').value);
+ if(!amount||amount<=0){alert('Enter an amount first.');return}
+ // Timestamp is captured exactly when this button is pressed.
+ state.tx.push({cat:selected,amount,ts:new Date().toISOString()});
+ document.getElementById('amount').value='';
+ save();
+}
+function openPast(){
+ const n=new Date();
+ document.getElementById('pastDate').value=dateKey(new Date(n.getTime()-86400000));
+ document.getElementById('pastTime').value='12:00';
+ document.getElementById('pastAmount').value='';
+ document.getElementById('modal').classList.add('open');
+ renderChips();
+}
+function closePast(){document.getElementById('modal').classList.remove('open')}
+function addPast(){
+ const amount=Number(document.getElementById('pastAmount').value), d=document.getElementById('pastDate').value, t=document.getElementById('pastTime').value;
+ if(!amount||!d||!t){alert('Enter amount, date and time.');return}
+ const ts=new Date(d+'T'+t).toISOString();
+ state.tx.push({cat:pastSelected,amount,ts});
+ closePast();save();
+}
+render();
+</script>
+</body>
+</html>
