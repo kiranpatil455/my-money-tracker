@@ -40,27 +40,20 @@ button,input,select{font:inherit}button{cursor:pointer}
   </nav>
 
   <main id="home" class="page">
+    <section class="section">
+      <div class="sectionhead"><h2>Today</h2><span class="muted" id="todayDate"></span></div>
+      <div class="card allow">
+        <div class="allowbox"><small class="muted">Today's personal target</small><b id="dailyTarget">₹0</b></div>
+        <div class="allowbox"><small class="muted">Still allowed</small><b id="stillAllowed" class="good">₹0</b></div>
+      </div>
+    </section>
+
     <section class="hero">
       <h1>Spend with intention.</h1><p>Quick entry first. Your money picture stays visible.</p>
       <div class="stats">
         <div class="stat"><small>Monthly income</small><b id="hIncome">₹0</b></div>
         <div class="stat"><small>Spent this month</small><b id="hSpent">₹0</b></div>
         <div class="stat"><small>Balance</small><b id="hBalance">₹0</b></div>
-      </div>
-    </section>
-
-    <section class="section card">
-      <div class="sectionhead"><h2>Quick expense</h2><span class="muted">Personal</span></div>
-      <div class="entry"><input id="amount" class="input" inputmode="decimal" placeholder="₹ Amount"><button class="primary" onclick="addNow()">Add</button></div>
-      <div class="chips" id="chips"></div>
-      <div class="actions" style="margin-top:12px"><button class="secondary" onclick="openPast()">＋ Add past expense</button><button class="secondary" onclick="showPage('settings')">✎ Edit cards</button></div>
-    </section>
-
-    <section class="section">
-      <div class="sectionhead"><h2>Today</h2><span class="muted" id="todayDate"></span></div>
-      <div class="card allow">
-        <div class="allowbox"><small class="muted">Today's personal target</small><b id="dailyTarget">₹0</b></div>
-        <div class="allowbox"><small class="muted">Still allowed</small><b id="stillAllowed" class="good">₹0</b></div>
       </div>
     </section>
 
@@ -118,6 +111,12 @@ button,input,select{font:inherit}button{cursor:pointer}
       <div class="sectionhead"><h2>Fixed expense categories</h2><span class="muted">Rename / add</span></div>
       <div id="categoryEditor" class="list"></div>
       <button class="secondary" style="width:100%;margin-top:12px" onclick="openAddCategory()">＋ Add budget category</button>
+    </div>
+    <div class="section card">
+      <div class="sectionhead"><h2>Backup & transfer</h2><span class="muted">Your data stays on this device</span></div>
+      <div class="notice">Your tracker data is stored in this browser. Updating the app does not delete it. For clearing Chrome data or moving to another device, export a backup first and import it afterward.</div>
+      <div style="margin-top:12px" class="row"><div><b>Automatic backup reminder</b><small id="backupStatus">Checks every 15 days</small></div><button class="secondary" onclick="exportData()">Export now</button></div>
+      <div class="actions" style="margin-top:10px"><button class="secondary" onclick="document.getElementById('restoreFile').click()">Import backup</button></div>
     </div>
     <div class="section card">
       <div class="sectionhead"><h2>Data</h2></div>
@@ -198,6 +197,7 @@ function renderHistory(){
 }
 function renderSettings(){
  document.getElementById('shortcutEditor').innerHTML=S.shortcuts.map((x,i)=>`<div class="row"><div class="left"><span class="dot"></span><b>${esc(x)}</b></div><div class="actions"><button class="secondary" onclick="openRenameShortcut(${i})">✎</button><button class="secondary danger" onclick="deleteShortcut(${i})">×</button></div></div>`).join('');
+ updateBackupStatus();
  document.getElementById('categoryEditor').innerHTML=S.categories.map((x,i)=>`<div class="row"><div><b>${esc(x.name)}</b><small>Target ${money(x.budget)}/month</small></div><div class="actions"><button class="secondary" onclick="openRenameCategory(${i})">✎</button><button class="secondary danger" onclick="deleteCategory(${i})">×</button></div></div>`).join('');
 }
 function openRenameShortcut(i){openModal('Rename expense card',`<label class="small">Card name</label><input id="newName" class="input" value="${esc(S.shortcuts[i])}" style="margin-top:6px">`,()=>{let v=newName.value.trim();if(!v)return;S.shortcuts[i]=v;if(selectedShortcut===S.shortcuts[i])selectedShortcut=v;save();closeModal();renderSettings();renderHome()})}
@@ -208,11 +208,10 @@ function openAddCategory(){openModal('Add budget category',`<label class="small"
 function deleteCategory(i){if(confirm(`Delete budget category "${S.categories[i].name}"? Existing transactions are not deleted.`)){S.categories.splice(i,1);save();renderSettings();renderBudget()}}
 function openModal(title,body,fn){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalSave').onclick=fn;document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
-function exportData(){let blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='money-tracker-backup.json';a.click();URL.revokeObjectURL(a.href)}
-function restoreData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.tx||!x.shortcuts)throw 0;S={...defaultState,...x};save();renderSettings();renderHome();alert('Backup restored.')}catch(err){alert('Invalid backup file.')}};r.readAsText(f)}
+function restoreData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let raw=JSON.parse(r.result);let x=raw&&raw.data?raw.data:raw;if(!x.tx||!x.shortcuts)throw 0;S={...structuredClone(defaultState),...x};save();closeModal();renderSettings();renderHome();renderBudget();renderHistory();alert('Backup restored successfully.');localStorage.setItem('moneyTrackerLastBackup',String(Date.now()));updateBackupStatus()}catch(err){alert('Invalid backup file.')}};r.readAsText(f)}
 function resetData(){if(confirm('Delete all tracker data? This cannot be undone.')){S=structuredClone(defaultState);save();renderHome();renderSettings();renderBudget();renderHistory()}}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-document.getElementById('budgetMonth').value=ym();document.getElementById('historyMonth').value=ym();showPage('home');
+document.getElementById('budgetMonth').value=ym();document.getElementById('historyMonth').value=ym();showPage('home');autoBackupReminder();
 </script>
 </body>
 </html>
