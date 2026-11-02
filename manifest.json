@@ -1,9 +1,10 @@
 {
   "name":"My Money Tracker",
   "short_name":"Money Tracker",
-  "start_url":"./index.html",
+  "start_url":"./",
   "display":"standalone",
-  "background_color":"#080b14",
-  "theme_color":"#0b1020",
+  "background_color":"#080b10",
+  "theme_color":"#0b0f14",
+  "description":"Personal offline money tracker",
   "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
