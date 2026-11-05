@@ -81,7 +81,7 @@ footer{color:#65717d;text-align:center;font-size:11px;margin-top:24px}
 <label>Personal target<input id="personalTargetInput" type="number" min="0" step="0.01"></label></div>
 <p class="muted" style="font-size:12px" id="modeHelp"></p>
 </section>
-<section class="card"><div class="section-title"><h2>Budget Categories</h2><button class="btn small" id="addBudgetCat">＋ Add</button></div><div id="budgetCats"></div></section>
+<section class="card"><div class="section-title"><h2>Budget Categories</h2><button class="btn small" id="addBudgetCat">＋ Add</button></div><div id="budgetCats"></div></section><section class="card"><h2>Budget Usage This Month</h2><p class="muted" style="font-size:12px;margin-top:-6px">Visual progress bars show how much of each budget has been used. Red means over budget.</p><div id="budgetLedger"></div></section>
 <section class="card"><button class="btn primary" id="saveBudget">Save Budget Changes</button></section>
 </main>
 
@@ -92,7 +92,7 @@ footer{color:#65717d;text-align:center;font-size:11px;margin-top:24px}
 </main>
 
 <main id="settingsPage" class="hidden">
-<section class="card"><h2>Quick Expense Cards</h2><div id="shortcutEditor"></div><button class="btn" id="addShortcut">＋ Add Expense Card</button></section>
+<section class="card"><h2>Quick Expense Cards</h2><div id="shortcutEditor"></div><div class="row stack" style="margin-top:10px"><button class="btn" id="addShortcut">＋ Add Expense Card</button><button class="btn primary" id="saveShortcuts">Save Card Changes</button></div><p class="muted" style="font-size:12px">Choose which budget each card should deduct from. Personal cards affect your daily allowance; Petrol, Travel, Rent, etc. deduct from their own monthly budgets.</p></section>
 <section class="card"><h2>Backup & Transfer</h2><p class="muted" style="font-size:13px">Your data is stored locally in this browser. Export a backup before clearing browser data or moving to another device.</p><div class="row stack"><button class="btn primary" id="exportBtn">Export Backup</button><label class="btn" style="text-align:center">Import Backup<input id="importFile" type="file" accept=".json" style="display:none"></label></div><p id="backupStatus" class="muted" style="font-size:12px"></p></section>
 <section class="card"><h2>Data</h2><button class="btn danger" id="resetBtn">Reset all data</button></section>
 </main>
@@ -108,7 +108,7 @@ const DEFAULT={
   {name:'Lunch / Dining',budget:3000},{name:'Room Rent',budget:6000},
   {name:'Light Bill',budget:1000},{name:'Petrol',budget:2000},{name:'Travel',budget:1500}
  ],
- shortcuts:['Tea','Coffee','Lunch','Snacks','Shopping','Other'],tx:[]
+ shortcuts:[{id:'c1',name:'Tea',emoji:'☕',budget:'Personal'},{id:'c2',name:'Coffee',emoji:'☕',budget:'Personal'},{id:'c3',name:'Lunch',emoji:'🍱',budget:'Personal'},{id:'c4',name:'Snacks',emoji:'🍿',budget:'Personal'},{id:'c5',name:'Shopping',emoji:'🛍️',budget:'Personal'},{id:'c6',name:'Other',emoji:'➕',budget:'Personal'}],shortcutBudgets:{},tx:[]
 };
 let S=load(), selectedPage='home';
 
@@ -116,7 +116,10 @@ function clone(x){return JSON.parse(JSON.stringify(x))}
 function load(){
  try{
   const x=JSON.parse(localStorage.getItem(KEY));
-  if(x)return {...clone(DEFAULT),...x,categories:x.categories||clone(DEFAULT.categories),shortcuts:x.shortcuts||clone(DEFAULT.shortcuts),tx:x.tx||[]};
+  if(x){
+  let cards=(x.shortcuts||clone(DEFAULT.shortcuts)).map((c,i)=>typeof c==='string'?{id:'legacy'+i,name:c,emoji:'',budget:(x.shortcutBudgets||{})[c]||'Personal'}:{id:c.id||('card'+i),name:c.name||'Expense',emoji:c.emoji||'',budget:c.budget||'Personal'});
+  return {...clone(DEFAULT),...x,categories:x.categories||clone(DEFAULT.categories),shortcuts:cards,shortcutBudgets:x.shortcutBudgets||{},tx:x.tx||[]};
+ }
  }catch(e){}
  return clone(DEFAULT);
 }
@@ -155,7 +158,7 @@ function render(){
 }
 function renderQuick(){
  let g=document.getElementById('quickGrid');g.innerHTML='';
- S.shortcuts.forEach((x,i)=>{let b=document.createElement('button');b.innerHTML=`<strong>${esc(x)}</strong><span>tap to use</span>`;b.onclick=()=>{let a=document.getElementById('quickAmount').value;if(!a)return document.getElementById('quickAmount').focus();addTx(x,a);document.getElementById('quickAmount').value=''};g.appendChild(b)})
+ S.shortcuts.forEach((card,i)=>{let target=card.budget||'Personal';let b=document.createElement('button');b.innerHTML=`<strong>${esc(card.emoji||'')} ${esc(card.name)}</strong><span>${esc(target)}</span>`;b.onclick=()=>{let a=document.getElementById('quickAmount').value;if(!a)return document.getElementById('quickAmount').focus();addTx(card.name,a,target);document.getElementById('quickAmount').value=''};g.appendChild(b)})
 }
 function renderPersonalBox(){
  let k=monthKey(), spent=personalSpent(k), budget=personalMonthly(k), rem=Math.max(0,budget-spent), pct=budget?Math.min(100,spent/budget*100):0;
@@ -175,6 +178,12 @@ function renderBudget(){
  let el=document.getElementById('budgetCats');el.innerHTML='';
  S.categories.forEach((c,i)=>{let r=document.createElement('div');r.className='row';r.style.marginBottom='8px';r.innerHTML=`<input value="${escAttr(c.name)}" data-cat-name="${i}"><input type="number" min="0" step="0.01" value="${Number(c.budget||0)}" data-cat-budget="${i}"><button class="btn danger small" data-del-cat="${i}">Delete</button>`;el.appendChild(r)})
  el.querySelectorAll('[data-del-cat]').forEach(b=>b.onclick=()=>{if(confirm('Delete this budget category?')){S.categories.splice(Number(b.dataset.delCat),1);save();render()}})
+ let ledger=document.getElementById('budgetLedger'), k=monthKey();
+ let rows=[{name:'Personal',budget:personalMonthly(k)},...S.categories.map(c=>({name:c.name,budget:Number(c.budget||0)}))];
+ ledger.innerHTML='';
+ rows.forEach(c=>{let spent=monthTx(k).filter(t=>t.budget===c.name).reduce((a,t)=>a+Number(t.amount||0),0),remaining=c.budget-spent,pct=c.budget>0?Math.min(100,spent/c.budget*100):0;
+ let r=document.createElement('div');r.style.margin='12px 0';r.innerHTML=`<div class="section-title"><b>${esc(c.name)}</b><b class="${remaining<0?'over':''}">${money(spent)} / ${money(c.budget)}</b></div><div class="progress"><i style="width:${pct}%;background:${remaining<0?'var(--danger)':'var(--accent)'}"></i></div><div class="meta ${remaining<0?'over':'muted'}" style="margin-top:4px">${remaining<0?'Over budget by '+money(-remaining):money(remaining)+' remaining'}</div>`;ledger.appendChild(r)
+ })
 }
 function renderHistory(){
  let k=document.getElementById('historyMonth').value||monthKey();document.getElementById('historyMonth').value=k;
@@ -189,8 +198,9 @@ function renderHistory(){
 }
 function renderSettings(){
  let el=document.getElementById('shortcutEditor');el.innerHTML='';
- S.shortcuts.forEach((x,i)=>{let r=document.createElement('div');r.className='row';r.style.marginBottom='8px';r.innerHTML=`<input value="${escAttr(x)}" data-short="${i}"><button class="btn danger small" data-del-short="${i}">Delete</button>`;el.appendChild(r)});
- el.querySelectorAll('[data-del-short]').forEach(b=>b.onclick=()=>{S.shortcuts.splice(Number(b.dataset.delShort),1);save();render()});
+ S.shortcuts.forEach((card,i)=>{let opts=['Personal',...S.categories.map(c=>c.name)].map(n=>`<option value="${escAttr(n)}" ${n===(card.budget||'Personal')?'selected':''}>${esc(n)}</option>`).join('');
+ let r=document.createElement('div');r.className='row stack';r.style.marginBottom='9px';r.innerHTML=`<input value="${escAttr(card.emoji||'')}" data-card-emoji="${i}" placeholder="Emoji" aria-label="Card emoji" style="max-width:76px"><input value="${escAttr(card.name)}" data-card-name="${i}" placeholder="Card name"><select data-card-budget="${i}" aria-label="Budget">${opts}</select><button class="btn danger small" data-del-short="${i}">Delete</button>`;el.appendChild(r)});
+ el.querySelectorAll('[data-del-short]').forEach(b=>b.onclick=()=>{S.shortcuts.splice(Number(b.dataset.delShort),1);renderSettings()});
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function escAttr(s){return esc(s).replace(/`/g,'&#96;')}
@@ -200,7 +210,7 @@ function updateBackupStatus(){
  let days=(Date.now()-Number(v))/86400000;el.textContent=`Last export: ${Math.floor(days)} day(s) ago.`+(days>=15?' Backup reminder is due.':'');
 }
 function exportData(){
- let payload={app:'My Money Tracker',version:5,exportedAt:new Date().toISOString(),data:S};
+ let payload={app:'My Money Tracker',version:7,exportedAt:new Date().toISOString(),data:S};
  let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download='money-tracker-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
  localStorage.setItem(BACKUP_KEY,String(Date.now()));updateBackupStatus();
@@ -219,7 +229,8 @@ document.getElementById('pastBtn').onclick=()=>{
  let amount=prompt('Amount (₹):');if(amount===null)return;
  let raw=prompt('Date & time (example: 2026-11-02 14:30):',new Date().toISOString().slice(0,16).replace('T',' '));if(raw===null)return;
  let ts=new Date(raw.replace(' ','T'));if(isNaN(ts))return alert('Invalid date/time.');
- addTx(cat,amount,'Personal',ts.toISOString());
+ let choices=['Personal',...S.categories.map(c=>c.name)], target=prompt('Deduct from which budget?\\n'+choices.join(', '),'Personal');if(target===null)return;if(!choices.includes(target))return alert('Choose one of the listed budget names.');
+ addTx(cat,amount,target,ts.toISOString());
 };
 document.getElementById('editCardsBtn').onclick=()=>switchPage('settings');
 document.getElementById('viewHistory').onclick=()=>switchPage('history');
@@ -230,7 +241,13 @@ document.getElementById('saveBudget').onclick=()=>{
  save();alert('Budget saved.');render();
 };
 document.getElementById('addBudgetCat').onclick=()=>{let n=prompt('New budget category name:');if(!n)return;S.categories.push({name:n,budget:0});save();render()};
-document.getElementById('addShortcut').onclick=()=>{let n=prompt('New expense card name:');if(!n)return;S.shortcuts.push(n);save();render()};
+document.getElementById('addShortcut').onclick=()=>{let n=prompt('New expense card name:','Snacks');if(!n)return;let emoji=prompt('Card emoji (optional):','🍿')||'';S.shortcuts.push({id:'c'+Date.now(),name:n.trim(),emoji,budget:'Personal'});renderSettings()};
+document.getElementById('saveShortcuts').onclick=()=>{
+ document.querySelectorAll('[data-card-name]').forEach(x=>{let i=Number(x.dataset.cardName);if(S.shortcuts[i])S.shortcuts[i].name=x.value.trim()||S.shortcuts[i].name});
+ document.querySelectorAll('[data-card-emoji]').forEach(x=>{let i=Number(x.dataset.cardEmoji);if(S.shortcuts[i])S.shortcuts[i].emoji=x.value.trim()});
+ document.querySelectorAll('[data-card-budget]').forEach(x=>{let i=Number(x.dataset.cardBudget);if(S.shortcuts[i])S.shortcuts[i].budget=x.value});
+ save();render();alert('Expense cards saved.');
+};
 document.getElementById('exportBtn').onclick=exportData;
 document.getElementById('importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};
 document.getElementById('resetBtn').onclick=()=>{if(confirm('This will delete all transactions and settings. Continue?')){localStorage.removeItem(KEY);localStorage.removeItem(BACKUP_KEY);S=clone(DEFAULT);render()}};
